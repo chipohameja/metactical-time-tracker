@@ -17,7 +17,7 @@ app_license = "MIT"
 # app_include_js = "/assets/metactical_time_tracker/js/metactical_time_tracker.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/metactical_time_tracker/css/metactical_time_tracker.css"
+web_include_css = "/assets/metactical_time_tracker/css/metactical_time_tracker.css"
 # web_include_js = "/assets/metactical_time_tracker/js/metactical_time_tracker.js"
 
 # include custom scss in every website theme (without file extension ".scss")
