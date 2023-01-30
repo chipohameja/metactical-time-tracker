@@ -1,5 +1,5 @@
 <div id="tracker">
-  <form>
+  <form id="auth">
     <div class="form-group">
       <label for="email">Email address</label>
       <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -17,7 +17,7 @@
 
   <div class="clock-in-out-buttons">
     <div class="clock-in">
-      <button id="clock-in-btn" type="button" class="btn btn-success btn- d-none">Clock In</button>
+      <button id="clock-in-btn" type="button" class="btn btn-success btn-lg d-none">Clock In</button>
     </div>
 
     <div class="clock-out">
@@ -32,32 +32,113 @@
     <div id="success-notification" class="alert alert-success d-none" role="alert"></div>
   </div>
 
-  <div id="pay-cycle">
+  <div id="pay-cycle" class="table-responsive d-none">
+    <div class="next-prev-buttons">
+      <div class="prev-button">
+        <button id="prev-button" class="btn btn-dark">Previous</button>
+      </div>
+
+      <div class="next-button">
+        <button id="next-button" class="btn btn-info" disabled>Next</button>
+      </div>
+    </div>
+
     <table id="table1" class="table table-bordered">
       <thead class="thead-light">
-        <tr>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
-        </tr>
+        <tr id="trh1"></tr>
       </thead>
+
       <tbody>
-        <tr>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <td>Larry</td>
-          <td>the Bird</td>
-          <td>@twitter</td>
-        </tr>
+        <tr id="trb1"></tr>
       </tbody>
     </table>
+
+    <table id="table2" class="table table-bordered">
+      <thead class="thead-light">
+        <tr id="trh2"></tr>
+      </thead>
+      <tbody>
+        <tr id="trb2"></tr>
+      </tbody>
+    </table>
+
+    <div id="hours-worked">
+      <div id="total-hours-worked" class="alert alert-info text-center"></div>
+    </div>
+
+    <br>
+
+    <div id="date-details">
+      <div id="details"></div>
+      <div id="shift-info" class="d-none">
+        <div id="current-shift">
+          <h2>Current shift details</h2>
+          <div><b>Starts at: </b><span id="starts-at"></span></div>
+          <div><b>Ends at: </b><span id="ends-at"></span></div>
+        </div> <br>
+        <button id="request-shift-change-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#change-shift-modal">Request shift change</button>
+      </div>
+    </div>
   </div>
+
+  <!-- MODAL -->
+  <!-- Button trigger modal -->
+  <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+  </button> -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="change-shift-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Select preferred shift</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- DROP DOWN -->
+          <div class="dropdown">
+            <button id="select-shift-button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+              Select shift
+            </button>
+            <div class="dropdown-menu" id="shifts">
+              <p class="dropdown-item"><span class="shift-time">Action</span><span class="shift-name d-none">something</span></p>
+              <p class="dropdown-item">Another action</p>
+              <p class="dropdown-item">Something else here</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="shift-change-submit" type="button" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p class="alert alert-success">Request submitted<p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>

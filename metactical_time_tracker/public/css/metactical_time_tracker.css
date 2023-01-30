@@ -20,3 +20,24 @@
     width: 100%;
     height: 200px;
 }
+
+#tracker .next-prev-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+#tracker .next-prev-buttons div {
+    padding: 10px 20px;
+}
+
+#tracker #date-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#tracker #date-details #details div {
+    margin-top: 10px;
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 12px;
+}

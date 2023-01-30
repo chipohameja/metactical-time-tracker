@@ -18,22 +18,24 @@
    "options": "Pay Cycle Record"
   },
   {
-   "default": "0",
+   "default": "3",
    "fieldname": "clockinout_delay",
-   "fieldtype": "Float",
-   "label": "Clock in/out Delay (Seconds)"
+   "fieldtype": "Int",
+   "label": "Clock in/out Delay (Seconds)",
+   "non_negative": 1
   },
   {
-   "default": "3",
+   "default": "2",
    "fieldname": "previous_viewable_pay_cycles",
    "fieldtype": "Int",
-   "label": "Previous Viewable Pay Cycles"
+   "label": "Previous Viewable Pay Cycles",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-01-21 11:44:41.424186",
+ "modified": "2023-01-24 01:09:03.805588",
  "modified_by": "Administrator",
  "module": "Metactical Time Tracker",
  "name": "Time Tracker Settings",
