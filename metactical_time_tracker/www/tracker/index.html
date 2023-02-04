@@ -71,12 +71,13 @@
     <div id="date-details">
       <div id="details"></div>
       <div id="shift-info" class="d-none">
-        <div id="current-shift">
+        <div id="selected-clockin-log"></div>
+        <!-- <div id="current-shift">
           <h2>Current shift details</h2>
           <div><b>Starts at: </b><span id="starts-at"></span></div>
           <div><b>Ends at: </b><span id="ends-at"></span></div>
-        </div> <br>
-        <button id="request-shift-change-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#change-shift-modal">Request shift change</button>
+        </div> --> <br>
+        <button id="request-details-change-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#change-details-modal">Request details change</button>
       </div>
     </div>
   </div>
@@ -88,19 +89,19 @@
   </button> -->
 
   <!-- Modal -->
-  <div class="modal fade" id="change-shift-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  <div class="modal fade" id="change-details-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Select preferred shift</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Input new details</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <!-- DROP DOWN -->
-          <div class="dropdown">
+          <!-- <div class="dropdown">
             <button id="select-shift-button" class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
               Select shift
             </button>
@@ -109,11 +110,63 @@
               <p class="dropdown-item">Another action</p>
               <p class="dropdown-item">Something else here</p>
             </div>
-          </div>
+          </div> -->
+
+          <form id="select-time">
+            <div id="check-in">
+              <h2>CheckIn</h2>
+              <div>
+                <div>
+                  <span>Hours</span> <br>
+                  <input value="01" id="check-in-hours" type="number" min="1" max="12">
+                </div>
+                
+                <div>
+                  <span>Minutes</span> <br>
+                  <input value="00" id="check-in-minutes" type="number" min="00" max="60">
+                </div>
+                
+                <div>
+                  <span>AM/PM</span> <br>
+                  <select id="check-in-am-pm">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
+              </div>  
+            </div>
+
+            <br>
+
+            <div id="check-out">
+              <h2>CheckOut</h2>
+              <div>
+                <div>
+                  <span>Hours</span> <br>
+                  <input value="01" id="check-out-hours" type="number" min="1" max="12">
+                </div>
+                
+                <div>
+                  <span>Minutes</span> <br>
+                  <input value="00" id="check-out-minutes" type="number" min="00" max="60">
+                </div>
+                
+                <div>
+                  <span>AM/PM</span> <br>
+                  <select id="check-out-am-pm">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
+              </div>  
+            </div>
+            <br>
+            <button id="submit-time-change" type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="shift-change-submit" type="button" class="btn btn-primary">Submit</button>
+          <!-- <button id="shift-change-submit" type="button" class="btn btn-primary">Submit</button> -->
         </div>
       </div>
     </div>

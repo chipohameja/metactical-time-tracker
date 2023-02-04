@@ -172,7 +172,7 @@ def update_clockin_log(current_date, to_time):
 def get_date_details(date):
 	user = frappe.session.user
 
-	clockins = frappe.get_all("Clockin Log", filters={"user": user, "date": date, "has_clocked_out": 1}, fields=["from_time", "to_time"])
+	clockins = frappe.get_all("Clockin Log", filters={"user": user, "date": date, "has_clocked_out": 1}, fields=["name", "from_time", "to_time"])
 	
 	return {"clockins": clockins}
 
@@ -222,6 +222,92 @@ def shift_request(date, shift_type):
 		header="Shift Request"
 	)
 
+def convert_to_12hr(time_24hr):
+	frappe.errprint(time_24hr)
+	time = datetime.datetime.strptime(time_24hr, '%H:%M').strftime('%I:%M %p')
+	return time
+
+@frappe.whitelist()
+def send_details_change_request(log_name, checkInTime12, checkInTimeMilitary, checkOutTime12, checkOutTimeMilitary, currentCheckIn12, currentCheckOut12, date):
+	user = frappe.session.user
+	#employee = frappe.db.exists("Employee", {"user_id": user})
+	#selected_shift_details = frappe.get_doc("Shift Type", shift_type)
+
+	#frappe.errprint("Log is")
+	#frappe.errprint(log_name)
+
+	user_doc = frappe.get_doc("User", user)
+	username = user_doc.username
+	first_name = user_doc.first_name
+	last_name = user_doc.last_name
+
+	requested_total_hours = time_difference(f'{checkOutTimeMilitary}:00', f'{checkInTimeMilitary}:00')
+	current_total_hours = frappe.get_value("Clockin Log", log_name, "total_hours")
+
+	#return request_total_hours
+
+	doc = frappe.get_doc({
+		"doctype": "Checkin Request Modification",
+		"user": user,
+		"date": date,
+		"current_checkin": currentCheckIn12,
+		"current_checkout": currentCheckOut12,
+		"current_total_hours": int(current_total_hours),
+		"requested_checkin": checkInTime12,
+		"requested_checkout": checkOutTime12,
+		"requested_total_hours": int(requested_total_hours),
+		"log": log_name,
+		"status": "Pending",
+		"requested_checkin_military": f'{checkInTimeMilitary}:00',
+		"requested_checkout_military": f'{checkOutTimeMilitary}:00'
+	})
+
+	doc.insert()
+	frappe.db.commit()
+
+	recipients = frappe.db.get_single_value("Time Tracker Settings", "checkin_approver")
+	frappe.sendmail(
+		recipients=recipients,
+		subject='Change Clockin details',
+		template='send_details_change_request',
+		args=dict(
+			date=str(date),
+			check_in=currentCheckIn12,
+			check_out=currentCheckOut12,
+			total_hours=current_total_hours,
+			checkInTime12=checkInTime12,
+			checkOutTime12=checkOutTime12,
+			requestedTotalHours=requested_total_hours,
+			username=username,
+			first_name=first_name,
+			last_name=last_name,
+			approve_url=f'approve?req={doc.name}',
+			decline_url=f'decline?req={doc.name}'
+		),
+		header="Checkin Modification Request"
+	)
+
+@frappe.whitelist()
+def decline_details_change_request(request_name):
+	req = frappe.get_doc("Checkin Request Modification", request_name)
+	req.status = "Declined"
+	req.save()
+
+	return "success"
+
+@frappe.whitelist()
+def approve_details_change_request(request_name):
+	req = frappe.get_doc("Checkin Request Modification", request_name)
+	req.status = "Approved"
+	req.save()
+
+	clockin_log = frappe.get_doc("Clockin Log", req.log)
+	clockin_log.from_time = req.requested_checkin_military
+	clockin_log.to_time = req.requested_checkout_military
+	clockin_log.save()
+
+	return "success"
+
 def time_difference(time1, time2):
 	# convert times to datetime objects
 	today = datetime.date.today()
@@ -235,8 +321,3 @@ def time_difference(time1, time2):
 	time_diff_hours = time_diff.total_seconds() / 3600
 	
 	return time_diff_hours
-
-def convert_to_12hr(time_24hr):
-	frappe.errprint(time_24hr)
-	time = datetime.datetime.strptime(time_24hr, '%H:%M').strftime('%I:%M %p')
-	return time

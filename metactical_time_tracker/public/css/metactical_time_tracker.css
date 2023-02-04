@@ -1,4 +1,4 @@
-#tracker form {
+#tracker #auth {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 30px;
@@ -35,9 +35,21 @@
     grid-template-columns: 1fr 1fr;
 }
 
+#tracker .table-btn:hover {
+    cursor: pointer;
+}
+
 #tracker #date-details #details div {
     margin-top: 10px;
     display: flex;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 12px;
+}
+
+#tracker .clockin-log:hover {
+    cursor: pointer;
+}
+
+#tracker #check-in > div, #tracker #check-out > div {
+    display: flex;
 }

@@ -13,6 +13,9 @@ let selectedDate;
 let selectedShiftType = "";
 let current_shift_name = "";
 
+//Clockin
+let selectedClockinLog;
+
 let pageIndex = 0;
 let countIndex = 0;
 
@@ -137,10 +140,10 @@ function onClockIn() {
                 validateButtons()
                 toggleTable()
 
-                $("#starts-at").text(r.message.current_shift.start_time)
-                $("#ends-at").text(r.message.current_shift.end_time)
-                current_shift_name = r.message.current_shift.name
-                
+                //$("#starts-at").text(r.message.current_shift.start_time)
+                //$("#ends-at").text(r.message.current_shift.end_time)
+                //current_shift_name = r.message.current_shift.name
+
                 //Display success message
                 notify('success', 'Login success');
             }
@@ -174,7 +177,7 @@ function onClockOut(message) {
             clockInButton.removeAttribute("disabled");
             //Display success message
             notify('danger', message);
-            if (!document.getElementById("pay-cycle").classList.contains("d-none")){
+            if (!document.getElementById("pay-cycle").classList.contains("d-none")) {
                 toggleTable()
             }
             //toggleTable()
@@ -307,7 +310,7 @@ function buttonActivationDelay(button) {
     }, button_activation_delay * 1000)
 }
 
-function toggleTable () {
+function toggleTable() {
     const payCycleTable = document.getElementById("pay-cycle")
     payCycleTable.classList.toggle("d-none")
 }
@@ -316,7 +319,7 @@ $("body").on("click", ".table-btn", function () {
     //alert("Clicked")    
     console.log($(this).children("span").text())
     getDateDetails($(this).children("span").text())
-    selectedDate = $(this).children("span").text()
+    selectedDate = dateFormatter($(this).children("span").text())
 })
 
 function getDateDetails(date) {
@@ -327,11 +330,11 @@ function getDateDetails(date) {
         },
         callback: r => {
             displayDateDetails(date, r.message.clockins)
-            shift_info = document.getElementById("shift-info")
+            /* shift_info = document.getElementById("shift-info")
             
             if(shift_info.classList.contains("d-none")) {
                 shift_info.classList.toggle("d-none")
-            }
+            } */
         }
     })
 }
@@ -340,13 +343,20 @@ function displayDateDetails(date, clockins) {
     let dateDetails = $("#details")
     dateDetails.empty()
 
+    // console.log("Clockins")
+    // console.log(clockins)
+
     dateDetails.append(`<span class="font-weight-bold">Date: </span><span>${dateFormatter(date)}</span>`)
-    
+
     for (let i = 0; i < clockins.length; i++) {
         dateDetails.append(`
-            <div>
-                <div><p class="font-weight-bold">Clocked In: </p><span>${clockins[i].from_time}</span></div>
-                <div><p class="font-weight-bold">Clocked Out: </p><span>${clockins[i].to_time}</span></div>
+            <div class="clockin-log">
+                <div><p class="font-weight-bold">Clocked In: </p><span class="clockin-time-12">${sliceAndConvertTimeTo12(clockins[i].from_time)}</span></div>
+                <div><p class="font-weight-bold">Clocked Out: </p><span class="clockout-time-12">${sliceAndConvertTimeTo12(clockins[i].to_time)}</span></div>    
+
+                <div class="d-none"><p class="font-weight-bold">Clocked In: </p><span class="clockin-time-24">${sliceTime(clockins[i].from_time)}</span></div>
+                <div class="d-none"><p class="font-weight-bold">Clocked Out: </p><span class="clockout-time-24">${sliceTime(clockins[i].to_time)}</span></div>
+                <span class="name d-none">${clockins[i].name}</span>
             </div>
         `)
     }
@@ -359,21 +369,62 @@ function sliceTime(time) {
         let fullLengthTime = `0${time}`
         slicedTime = `${fullLengthTime.slice(0, 5)}`
     }
-    
+
     else {
         slicedTime = `${time.slice(0, 5)}`
     }
-    
+
     return slicedTime;
 }
 
-$("body").on("click", ".dropdown-item", function () {
+
+//Convert time to 12 hours format
+function sliceAndConvertTimeTo12(time) {
+    let slicedTime;
+    console.log(time)
+    if (time.length == 7) {
+        let fullLengthTime = `0${time}`
+        slicedTime = `${fullLengthTime.slice(0, 5)}`
+    }
+
+    else {
+        slicedTime = `${time.slice(0, 5)}`
+    }
+
+    //return slicedTime;
+    var dt = new Date(`2023-01-01 ${slicedTime}`);
+    var hours = dt.getHours(); // gives the value in 24 hours format
+    //console.log(dt)
+
+    var AmOrPm = hours >= 12 ? 'PM' : 'AM';
+    hours = (hours % 12) || 12;
+    var minutes = dt.getMinutes();
+    var finalTime = hours + ":" + minutes + " " + AmOrPm;
+    return finalTime
+}
+
+//Convert time to military format
+function convertTimeToMilitary(timeStr) {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    if (hours === '12') {
+        hours = '00';
+    }
+    if (modifier === 'PM') {
+        hours = parseInt(hours, 10) + 12;
+    }
+    return `${hours}:${minutes}`;
+}
+
+//To modify
+/* $("body").on("click", ".dropdown-item", function () {
     $("#select-shift-button").text($(this).children(".shift-time").text())
     selectedShiftType = $(this).children(".shift-name").text()
     shiftSelected = true
-})
+}) */
 
-$("body").on("click", "#request-shift-change-button", function () {
+//To modify
+/* $("body").on("click", "#request-details-change-button", function () {
     frappe.call({
         method: "metactical_time_tracker.api.get_shifts",
         args: {
@@ -393,9 +444,10 @@ $("body").on("click", "#request-shift-change-button", function () {
             }
         }
     })
-})
+}) */
 
-$("body").on("click", "#shift-change-submit", function() {
+//To modify
+/* $("body").on("click", "#shift-change-submit", function() {
     //let shift_type = $("#shifts").text($(this).children(".shift-time").text())
 
     console.log(selectedShiftType)
@@ -408,6 +460,67 @@ $("body").on("click", "#shift-change-submit", function() {
         callback: r => {
             console.log(r.message)
             $("#change-shift-modal").modal("hide")
+            $("#success-modal").modal("show")
+        }
+    })
+}) */
+
+//When clockin log is clicked
+$("body").on("click", ".clockin-log", function () {
+    selectedClockinLog = $(this)//.children(".d-none")
+    //console.log($(this).find(".clockin-time").text())
+    $("#selected-clockin-log").empty()
+    $("#selected-clockin-log").append(
+        `
+            <p><b>CheckIn: </b>${selectedClockinLog.find(".clockin-time-12").text()}</p>
+            <p><b>CheckOut: </b>${selectedClockinLog.find(".clockout-time-12").text()}</p>
+        `
+    )
+
+    console.log(selectedClockinLog.find(".d-none").text())
+
+    shift_info = document.getElementById("shift-info")
+
+    if (shift_info.classList.contains("d-none")) {
+        shift_info.classList.toggle("d-none")
+    }
+})
+
+$("body").on("click", "#submit-time-change", function (event) {
+    event.preventDefault()
+    const checkInTime12 = `${$("#check-in-hours").val()}:${$("#check-in-minutes").val()} ${$("#check-in-am-pm").val()}`
+    const checkInTimeMilitary = convertTimeToMilitary(checkInTime12)
+
+    const checkOutTime12 = `${$("#check-out-hours").val()}:${$("#check-out-minutes").val()} ${$("#check-out-am-pm").val()}`
+    const checkOutTimeMilitary = convertTimeToMilitary(checkOutTime12)
+
+    //New
+    console.log(checkInTime12)
+    console.log(checkInTimeMilitary)
+    console.log(checkOutTime12)
+    console.log(checkOutTimeMilitary)
+
+    //Current
+    const currentCheckIn12 = selectedClockinLog.find('.clockin-time-12').text()
+    const currentCheckOut12 = selectedClockinLog.find('.clockout-time-12').text()
+
+    const log_name = selectedClockinLog.find(".name.d-none").text()
+
+    frappe.call({
+        method: "metactical_time_tracker.api.send_details_change_request",
+        args: {
+            "log_name": log_name,
+            "checkInTime12": checkInTime12,
+            "checkInTimeMilitary": checkInTimeMilitary,
+            "checkOutTime12": checkOutTime12,
+            "checkOutTimeMilitary": checkOutTimeMilitary,
+            "currentCheckIn12": currentCheckIn12,
+            "currentCheckOut12": currentCheckOut12,
+            "date": selectedDate
+        },
+        callback: r => {
+            console.log(r.message)
+            $("#change-details-modal").modal("hide")
             $("#success-modal").modal("show")
         }
     })

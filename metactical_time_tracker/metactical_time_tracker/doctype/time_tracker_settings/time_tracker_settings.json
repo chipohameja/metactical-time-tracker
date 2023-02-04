@@ -8,6 +8,7 @@
  "field_order": [
   "clockinout_delay",
   "previous_viewable_pay_cycles",
+  "checkin_approver",
   "pay_cycles"
  ],
  "fields": [
@@ -30,12 +31,18 @@
    "fieldtype": "Int",
    "label": "Previous Viewable Pay Cycles",
    "non_negative": 1
+  },
+  {
+   "fieldname": "checkin_approver",
+   "fieldtype": "Data",
+   "label": "Checkin Approver",
+   "options": "Email"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-01-24 01:09:03.805588",
+ "modified": "2023-02-03 03:35:31.886093",
  "modified_by": "Administrator",
  "module": "Metactical Time Tracker",
  "name": "Time Tracker Settings",
